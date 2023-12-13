@@ -1,0 +1,65 @@
+GraphQL is the alternative of REST API architecture
+
+
+REST api comes with the overfetching and underfetching problem like If we request a server that we want to know firstName of the user of ID so in response server will send the data of firstName but with the unnecessary item like :- lastName, email and password 
+
+(Request)eg:- 
+    id:- 123
+
+(Server Response) eg:-
+    id: 123
+    firstName: Hasan
+    lastName: Ali
+    email: ha22@gmail.com
+    password: abc1444
+
+
+GraphQL :- 
+
+So GraphQL will solve the overfetching problem
+
+(Client Request) e.g:-
+query{
+    user(id:123){
+        id
+        firstName
+    }
+}
+
+
+(GraphQL Server Response) e.g:-
+
+{
+    id: 123
+    firstName: Ramesh
+}
+
+
+REST API :-
+
+Methods
+
+GET : /users/posts
+POST : /login ; /signup
+PUT : /folow
+DELETE: /del/:postId
+API Testing - POSTman
+
+
+GraphQL API :-
+
+Only we have one method or one request from the client side
+
+POST : /or /graphql
+
+API Testing - Playground
+
+
+IMPORTANT TERMS :- 
+
+Query :- From client side we are doing a query to the server. (To get the data)  -->> Operaton
+Mutation :- Means to update the things on server side like to post / update / delete data. -->> Operation
+Resolver :- Has logic to handle query or mutation operation. (Is basically a calculation part in which it contains the logic of query and mutation)  
+
+
+GraphQL can be used with any server side language like node.js, golang, php, python etc
