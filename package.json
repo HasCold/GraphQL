@@ -1,0 +1,20 @@
+{
+  "name": "graphql-course",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./Query&Resolvers/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./Query&Resolvers/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.9.5",
+    "graphql": "^16.8.1",
+    "graphql-tag": "^2.12.6",
+    "nodemon": "^3.0.2"
+  }
+}
