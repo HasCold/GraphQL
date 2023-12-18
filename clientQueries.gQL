@@ -1,0 +1,78 @@
+query UsersInfo{
+  users {
+    id
+    firstName
+    lastName
+    email
+    quotes{
+      quote
+      by
+    }
+  }
+}
+------------------------------------------------------------------
+
+query QuotesInfo{
+   quotes {
+     quote  // You can gain the specified data as your requirements
+     by
+   }
+}
+------------------------------------------------------------------
+
+query SpecificIDUser{
+  user(id: "347") {
+    firstName
+    lastName
+    email
+    quotes {
+      quote
+      by
+    }
+  }
+}
+------------------------------------------------------------------
+
+query GetQuoteByID{
+  IndividualQuote(by: "125"){
+    quote
+    by
+  }
+}
+------------------------------------------------------------------
+
+Query Variables in GraphQL :-
+
+query GetUserID($userID: ID!){
+  user(id: $userID){
+    id
+    firstName
+    lastName
+    email
+    quotes {
+      quote
+      by
+    }
+  }  
+}
+
+In GraphQL, playground sandbox Variables are passed like a JSON format :-
+{
+  "userID": "125"
+}
+------------------------------------------------------------------
+
+Query Variables in GraphQL :-
+
+query GetQuoteByID($quoteBY: ID!){
+  IndividualQuote(by: $quoteBY){
+    quote
+    by
+  }
+}
+
+In sandbox query variables passed like a JSON format :-
+{
+  "quoteBY": "125"
+}
+-------------------------------------------------------------------

@@ -1,0 +1,53 @@
+mutation RegisterUser($firstName: String!, $lastName: String!, $email: String!, $password: String!){
+  signUpUserDummy(firstName: $firstName, lastName: $lastName, email: $email, password: $password){
+    id,
+    firstName,
+    lastName,
+    email,
+    password
+  }
+}
+
+Variables :- 
+{
+  "firstName": "Talha",
+  "lastName": "Ali",
+  "email": "talha@gmail.com",
+  "password": "09876",
+}
+
+----------------------------------------------------------------------------
+
+mutation createUser($userInfo: UserInput!){
+  signUpUserDummy(userNew: $userInfo){
+    id
+    firstName
+    lastName
+    email
+  }
+}
+
+OR 
+
+mutation createUser($userInfo: UserInput!){
+  user:signUpUserDummy(userNew: $userInfo){   # Here user used as a Alias keyword which is going to be shown in our response object instead of signUpUserDummy name
+    id
+    firstName
+    lastName
+    email
+  }
+}
+
+Variables :- 
+{
+  "userInfo": {
+    "firstName": "Huzaifa",
+    "lastName": "Ali",
+    "email": "huz@gmail.com",
+    "password": "12ka4"
+  }
+}
+
+--------------------------------------------------------------
+
+
