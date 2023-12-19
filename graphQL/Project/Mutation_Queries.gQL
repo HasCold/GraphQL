@@ -1,0 +1,42 @@
+mutation createUser($userInfo: UserInput!){
+  user: signUpUser(userNew: $userInfo){ 
+      _id
+      firstName
+      lastName
+      email
+  }
+}
+
+{
+  "userInfo": {
+    "firstName": "Muhammad",
+    "lastName": "Hasan",
+    "email": "hasan@gmail.com",
+    "password": "Hasan123"
+  }
+}
+---------------------------------------------------------------
+
+mutation singInUser($userInfo: AuthInput!){
+    userToken: signInUser(userSign: $userInfo){
+      token
+    } 
+}
+
+{
+  "userInfo": {
+    "email": "hasan@gmail.com",
+    "password": "Hasan123"
+  }
+}
+
+Response:- 
+{
+  "data": {
+    "userToken": {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOiI2NTgxYjBiYTc5MTViYjJjZjk1YjZlZTUiLCJpYXQiOjE3MDMwMDIzNzAsImV4cCI6MTcwMzQzNDM3MH0.aweT1AaXGeF80A1Cl2MiW8UVM71SyGBZ1CyWsz0ls1A"
+    }
+  }
+}
+---------------------------------------------------------------
+

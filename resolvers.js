@@ -1,13 +1,15 @@
-import {users, quotes} from "./fakeDB.js";
+import {users, quotes} from "./config/fakeDB.js";
 import {randomBytes} from "crypto";
+import mongoose from "mongoose";
+import { errorHandler } from "./middleware/errorHandler.js";
+import generateToken from "./config/generateToken.js";
+const UserModel = mongoose.model("User"); 
 
-// The calculation part in which the query logic contain is the resolver part
-// Basically Resolver contains the query and mutation logic part
 const resolvers = {
     Query: {
         users: () => users,
         quotes: () => quotes,
-        user: (_, args) => users.find(user => user.id === args.id), // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
+        user: (_, args) => users.find(user => user._id === args._id), // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
         IndividualQuote: (_, args) => quotes.filter(quote => quote.by === args.by) // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
     },
 
@@ -15,19 +17,40 @@ const resolvers = {
     // or we can say somthing like this the first argument is the root/parent 
 
     User: {
-        quotes: (user) => quotes.filter(quote => quote.by === user.id) // Filter method return each element one by one from the array
+        quotes: (user) => quotes.filter(quote => quote.by === user._id) // Filter method return each element one by one from the array
     },
 
     Mutation: {
-        signUpUserDummy: (_, {userNew}) => {   // you can also write like in this syntax args.userNew
-            const id = randomBytes(5).toString("hex")  // Return 10-digits random string
-            users.push({
-                id,
-                ...userNew
-            });
+        signUpUser: async (_, {userNew}) => {
+            try {
+                const user = await UserModel.findOne({email: {$eq: userNew.email}});
+                if(user) return errorHandler(false, 403, "User already exist !");
+            
+                const userModelInstance = new UserModel();
+                const hashedPassword = await userModelInstance.hashedPassword(userNew.password);
+    
+                const newUser = await new UserModel({...userNew, password: hashedPassword});
+                 return await newUser.save()  // IF you check in the User schema which is made in the schema.js file so you will see at the end we will return the User
+            } catch (error) {
+                return errorHandler(true, 500, error.message);
+            } 
+        },
 
-            return users.find(user => user.id === id);  // This will return that user which we will created
-        } // First arguemnt is the parent User type which is undefined and in the second argument is the parameters we have described in the schema like firstName, lastName etc.  
+        signInUser: async (_, {userSign}) => {
+            try {
+                const user = await UserModel.findOne({email: {$eq: userSign.email}});
+                if(!user) return errorHandler(false, 401, "User doesn't exist with this email");
+
+                const doMatch = await user.comparePassword(userSign.password, user.password) ;
+                if(!doMatch) return errorHandler(false, 401, "email or password is invalid");
+
+                const token = generateToken(user._id);
+                return {token}
+
+            } catch (error) {
+                throw errorHandler(false, 500, error.message);
+            }
+        }
     }
 } 
 

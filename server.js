@@ -1,8 +1,11 @@
 import {ApolloServer} from "@apollo/server";
 import { startStandaloneServer } from '@apollo/server/standalone';
 import {ApolloServerPluginLandingPageLocalDefault, ApolloServerPluginLandingPageProductionDefault} from '@apollo/server/plugin/landingPage/default';
-import typeDefs from "./schema.js";
+import "./models/user.Model.js";
+import "./models/quote.Model.js";
+import typeDefs from "./graphQL/schema.js";
 import resolvers from "./resolvers.js";
+import connectDB from "./config/db.js";
 
 // In GraphQL, we have three things query , mutation and resolver
 
@@ -11,6 +14,8 @@ import resolvers from "./resolvers.js";
 
 // The calculation part in which the query logic contain is the resolver part
 // Basically Resolver contains the query and mutation logic part
+
+connectDB();
 
 // Create new Apollo server instance
 const server = new ApolloServer({
