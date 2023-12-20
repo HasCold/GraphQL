@@ -6,6 +6,7 @@ import "./models/quote.Model.js";
 import typeDefs from "./graphQL/schema.js";
 import resolvers from "./resolvers.js";
 import connectDB from "./config/db.js";
+import dotenv from "dotenv";
 
 // In GraphQL, we have three things query , mutation and resolver
 
@@ -15,18 +16,24 @@ import connectDB from "./config/db.js";
 // The calculation part in which the query logic contain is the resolver part
 // Basically Resolver contains the query and mutation logic part
 
+dotenv.config();
 connectDB();
 
 // Create new Apollo server instance
 const server = new ApolloServer({
-    typeDefs,  // typeDefs: typeDefs
-    resolvers, // resolvers: resolvers 
+    typeDefs,  // typeDefs: typeDefs  -->> Schema
+    resolvers, // resolvers: resolvers  -->> Logic Define
     plugins: [
         ApolloServerPluginLandingPageLocalDefault({footer: false})
     ]
 });
 
 const {url} = await startStandaloneServer(server, {
+    // Below the async context function act as a middleware in the graphQL server for the clientside when they will access somthing it will verify from the token;    
+    context: async ({req, res}) => ({
+        authToken: req.headers.authorization
+
+    }),
     listen: {port: 4000}
 });
 

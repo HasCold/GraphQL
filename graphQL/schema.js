@@ -11,16 +11,22 @@ const typeDefs = gql`  # Tagged Template Literals
 
 type User {
     _id: ID!   # This is graphQL ID or you can also say that it is a string _id: ID 
-    firstName: String
-    lastName: String
-    email: String
-    password: String
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
     quotes: [Quote]
 }
 
+type QuoteWithName {
+    _id: ID!
+    firstName: String!
+    lastName: String!
+}
+
 type Quote {
-    quote: String
-    by: ID!  # This is graphQL ID or similar with the javascript string data type and ! = exclamation sign is a mandatory sign 
+    name: String!
+    by: QuoteWithName!  # This is graphQL ID or similar with the javascript string data type and ! = exclamation sign is a mandatory sign 
 }
 
 type Query{  
@@ -31,12 +37,13 @@ type Query{
 }
 
 type Token{
-    token: String
+    token: String!
 }
 
 type Mutation{
     signUpUser(userNew: UserInput!): User  # So it means on the basis of these arguments they will return the User type
     signInUser(userSign: AuthInput): Token
+    createQuote(name: String!): String
 }
 
 input UserInput{

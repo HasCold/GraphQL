@@ -3,21 +3,28 @@ import {randomBytes} from "crypto";
 import mongoose from "mongoose";
 import { errorHandler } from "./middleware/errorHandler.js";
 import generateToken from "./config/generateToken.js";
+import jwt from "jsonwebtoken";
+
 const UserModel = mongoose.model("User"); 
+const QuoteModel = mongoose.model("Quote");
 
 const resolvers = {
     Query: {
-        users: () => users,
-        quotes: () => quotes,
-        user: (_, args) => users.find(user => user._id === args._id), // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
-        IndividualQuote: (_, args) => quotes.filter(quote => quote.by === args.by) // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
+        users: async () => await UserModel.find({}),
+        quotes: async () => await QuoteModel.find({}).populate({
+            path: "by",
+            select: "firstName lastName"
+        }),
+        user: async (_, args) => await UserModel.findOne({_id: {$eq: args._id}}), // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
+        IndividualQuote: async (_, args) => await QuoteModel.find({by: {$eq: args.by}}) // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
     },
 
     // In GraphQL, if something not resolve properly like in the User schema the quote field does n't resolve succesfully so we have to define the logic in the resolvers separately by ourself ; In quotes field there parent is User schema so on every filter we get user 
     // or we can say somthing like this the first argument is the root/parent 
 
     User: {
-        quotes: (user) => quotes.filter(quote => quote.by === user._id) // Filter method return each element one by one from the array
+        quotes: async (user) => await QuoteModel.find({by: {$eq: user._id}}) 
+        // quotes: (user) => quotes.filter(quote => quote.by === user._id) // Filter method return each element one by one from the array
     },
 
     Mutation: {
@@ -49,6 +56,25 @@ const resolvers = {
 
             } catch (error) {
                 throw errorHandler(false, 500, error.message);
+            }
+        },
+
+        createQuote: async (_, args, contextValue) => {  // First Argument (_) is for the root or parent element which is undefined , second argument is for the arguments which we recieve from the client side also defined in our schema and third argument is context act as a middleware function just like in express but we will implement the logic part in our resolvers
+            try {
+
+                if(!contextValue.authToken){
+                    return errorHandler(false, 401, "Token Verification Failed"); 
+                }else if (contextValue.authToken){
+ 
+                    const {userId} = jwt.verify(contextValue.authToken, process.env.TOKEN_SECRET);
+                    const userQuote = await new QuoteModel({name: args.name, by: userId});
+                    
+                    await userQuote.save();
+                    return "Quote saved successfully !"
+                }
+
+            } catch (error) {
+                throw errorHandler(false, 501, "Quote couldn't be saved");
             }
         }
     }

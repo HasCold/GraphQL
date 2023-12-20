@@ -40,3 +40,52 @@ Response:-
 }
 ---------------------------------------------------------------
 
+mutation DoQuote{
+  Quote: createQuote(name: "The Thing that works for you is the best for you")
+}
+
+Header :- 
+Authorization = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTgxYjBiYTc5MTViYjJjZjk1YjZlZTUiLCJpYXQiOjE3MDMwNzY5OTMsImV4cCI6MTcwMzE2MzM5M30.NXeOCUu23QC8Obb4p3wINSA46Lca72cbLMUonUJAnVU"
+
+Response:- {
+  "data": {
+    "Quote": "Quote saved successfully !"
+  }
+}
+-----------------------------------------------------------------
+
+query GetAllQuote{
+  quotes {
+    name
+    by {
+      _id
+      firstName
+      lastName
+    }
+  }
+}
+
+Response :- {
+  "data": {
+    "quotes": [
+      {
+        "name": "This is me Hasan and doing testing",
+        "by": {
+          "_id": "6581c5271efdad025cd6fb12",
+          "firstName": "Umer",
+          "lastName": "Ali"
+        }
+      },
+      {
+        "name": "The Thing that works for you is the best for you",
+        "by": {
+          "_id": "6581b0ba7915bb2cf95b6ee5",
+          "firstName": "Muhammad",
+          "lastName": "Hasan"
+        }
+      }
+    ]
+  }
+}
+--------------------------------------------------------------------------
+
