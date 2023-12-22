@@ -1,8 +1,7 @@
-import {users, quotes} from "./config/fakeDB.js";
 import {randomBytes} from "crypto";
 import mongoose from "mongoose";
 import { errorHandler } from "./middleware/errorHandler.js";
-import generateToken from "./config/generateToken.js";
+import generateToken, { decryptToken } from "./config/generateToken_verifyToken.js";
 import jwt from "jsonwebtoken";
 
 const UserModel = mongoose.model("User"); 
@@ -16,8 +15,18 @@ const resolvers = {
             select: "firstName lastName"
         }),
         user: async (_, args) => await UserModel.findOne({_id: {$eq: args._id}}), // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
-        IndividualQuote: async (_, args) => await QuoteModel.find({by: {$eq: args.by}}) // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
-    },
+        IndividualQuote: async (_, args) => await QuoteModel.find({by: {$eq: args.by}}), // Basically first argument is the root element which it could itself so there is "_" and the second argument is their field;
+        
+        myProfile: async (_, args, contextValue) => {
+            try {
+                if(!contextValue.authToken) return errorHandler(false, 401, "Token Verification Failed"); 
+
+                return await UserModel.findOne({_id: decryptToken(contextValue.authToken)});
+            } catch (error) {
+                return errorHandler(true, 500, error.message);
+            }
+        }
+    }, 
 
     // In GraphQL, if something not resolve properly like in the User schema the quote field does n't resolve succesfully so we have to define the logic in the resolvers separately by ourself ; In quotes field there parent is User schema so on every filter we get user 
     // or we can say somthing like this the first argument is the root/parent 
@@ -66,10 +75,9 @@ const resolvers = {
                     return errorHandler(false, 401, "Token Verification Failed"); 
                 }else if (contextValue.authToken){
  
-                    const {userId} = jwt.verify(contextValue.authToken, process.env.TOKEN_SECRET);
-                    const userQuote = await new QuoteModel({name: args.name, by: userId});
-                    
+                    const userQuote = await new QuoteModel({name: args.name, by: decryptToken(contextValue.authToken)});
                     await userQuote.save();
+                    
                     return "Quote saved successfully !"
                 }
 

@@ -3,6 +3,7 @@ import CreateQuote from "./components/CreateQuote";
 import SignUp from "./components/auth/SignUp";
 import Home from "./layout/Home";
 import Profile from "./components/Profile";
+import OtherUserProfile from "./components/routes/OtherUser";
 
 export const routes = [
     {path: "/", element: <Home />},
@@ -10,4 +11,5 @@ export const routes = [
     {path: "/login", element: <Login />},
     {path: "/signup", element: <SignUp />},
     {path: "/profile", element: <Profile />},
+    {path: "/profile/:userId", element: <OtherUserProfile />}
 ]

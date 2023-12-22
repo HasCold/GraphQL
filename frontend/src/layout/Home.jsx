@@ -1,5 +1,6 @@
 import {useQuery} from '@apollo/client'
 import { GET_ALL_QUOTES } from "../gqlOperations/queries"
+import { Link } from 'react-router-dom';
 
 // The benefit of the use of Apollo Client makes the code maintainable, can be able to do auto-caching by the apollo-client and we can also use the apollo client hooks   
 
@@ -52,7 +53,9 @@ const Home = () => {
       return(
       <blockquote key={quote.by._id}>
         <h6>{quote.name}</h6>
+        <Link to={`/profile/${quote.by._id}`}>
         <p className="rigth-align">~{quote.by.firstName}</p>
+        </Link>
       </blockquote>
       )
     })}

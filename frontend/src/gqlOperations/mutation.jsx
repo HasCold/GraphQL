@@ -9,11 +9,16 @@ export const SIGNUP_USER = gql`  # Tagged Template Literals
   }
 }
 `
-
 export const SIGNIN_USER = gql`
     mutation signInUser($userlogin: AuthInput){
     user:signInUser(userSign: $userlogin){
             token
         }
     }
+`
+
+export const CREATE_QUOTE = gql`
+  mutation DoQuote($quote: String!){
+  quote:createQuote(name: $quote)
+} 
 `

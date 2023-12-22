@@ -34,6 +34,7 @@ type Query{
     user(_id: ID!): User
     quotes: [Quote]
     IndividualQuote(by: ID!): [Quote]  # The exclamation ! infront of the ID so is means it must be mandatory to prov_ide the ID in the function 
+    myProfile: User  # Return the User Type
 }
 
 type Token{

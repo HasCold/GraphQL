@@ -89,3 +89,69 @@ Response :- {
 }
 --------------------------------------------------------------------------
 
+query MyProfile{
+  user: myProfile {
+    _id
+    email
+    firstName
+    lastName
+  }
+}
+
+Response:-{
+  "data": {
+    "user": {
+      "_id": "6585b0536a0d9bc53639e52d",
+      "email": "saad@gmail.com",
+      "firstName": "Saad",
+      "lastName": "Zubair"
+    }
+  }
+}
+
+Header:-
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTg1YjA1MzZhMGQ5YmM1MzYzOWU1MmQiLCJpYXQiOjE3MDMyNjAyNjgsImV4cCI6MTcwMzM0NjY2OH0.YQncomiRDuLHgOTabZ1ItuBBRk5IOCI9I5RpGGfg6YI
+--------------------------------------------------------------------------------
+
+query GetUserById($userId: ID!){
+  user(_id: $userId){
+    firstName
+    lastName
+    email
+    quotes {
+      name
+      by {
+        _id
+      }
+    }
+  }
+}
+
+Variables:- {
+   "userId": "6585b0536a0d9bc53639e52d"
+}
+
+Response :- {
+  "data": {
+    "user": {
+      "firstName": "Saad",
+      "lastName": "Zubair",
+      "email": "saad@gmail.com",
+      "quotes": [
+        {
+          "name": "Allah will do everything right !",
+          "by": {
+            "_id": "6585b0536a0d9bc53639e52d"
+          }
+        },
+        {
+          "name": "Always be Humble!",
+          "by": {
+            "_id": "6585b0536a0d9bc53639e52d"
+          }
+        }
+      ]
+    }
+  }
+}
+-------------------------------------------------------------------------------------

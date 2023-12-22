@@ -9,4 +9,9 @@ const generateToken = async (userId) => {
     })
 }
 
+export const decryptToken = (id) => {
+    const {userId} = jwt.verify(id, process.env.TOKEN_SECRET);
+    return userId;
+}
+
 export default generateToken;
